@@ -47,9 +47,9 @@ var setTargetPopulation= function(room){
     var population = {
         "t1":{
             "harvester":total_population-2+adaptive_constant,
-            "builder":1,
-            "upgrader":1,
-            "maintainer":1
+            "builder":2,
+            "upgrader":2,
+            "maintainer":2
         }
     }
     room.memory.target_population = population
