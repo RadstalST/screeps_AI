@@ -1,3 +1,4 @@
+var utils = require("./utils")
 var roleBuilder = {
 
     /** @param {Creep} creep **/
@@ -5,20 +6,39 @@ var roleBuilder = {
         
 	    if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
+            creep.memory.building_target = null;
             creep.say('🔄 harvest');
-	    }
-	    if(!creep.memory.building && creep.store.getFreeCapacity() == 0) {
+	    }else if(!creep.memory.building && creep.store.getFreeCapacity() == 0) {
 	        creep.memory.building = true;
 	        creep.say('🚧 build');
-	    }
+	    }else{
+            creep.memory.building = false;
+            creep.memory.building_target = null;
+        }
 
 	    if(creep.memory.building) {
-	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if(targets.length) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            
+
+
+            // save building target in memory
+            if(creep.memory.building_target){
+
+            }else{
+                var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+                if(targets.length){
+                    // console.log(JSON.stringify(targets))
+                    creep.memory.building_target = utils.getNearestTarget(targets,creep).id
+
                 }
             }
+
+            var target = Game.getObjectById(creep.memory.building_target)
+            if(creep.build(target) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            }
+
+                
+            
 	    }
 	    else {
 	        var sources = creep.room.find(FIND_SOURCES);

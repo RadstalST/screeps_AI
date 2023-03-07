@@ -4,9 +4,19 @@ var roleHarvester = {
     run: function(creep) {
 	    if(creep.store.getFreeCapacity() > 0) {
             // move to harvest if there is free capacity 
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+            var sources = creep.room.find(FIND_SOURCES);            
+            var target_source = sources[0]
+            var min_cost = 99999
+            sources.forEach(s => {
+                var i_cost = PathFinder.search(creep.pos, s.pos ).cost
+                if(i_cost<min_cost){
+                    min_cost=i_cost
+                    target_source = s
+                }
+
+            });
+            if(creep.harvest(target_source) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target_source, {visualizePathStyle: {stroke: '#ffaa00'}},reusePath=10);
             }
         }
         else {
